@@ -14,7 +14,7 @@ while True:
 	print("\nPlease enter a command\n(1)Add Free Throw data\n(2)Delete data\n" + 
 		"(3)Get Data\n(4)Get Free Throw Percentage\n" +
 		"(5)Get Lowest Session Free Throw Percentage\n(6)Get Highest Session Free Throw Percentage\n" + 
-		"(7)Get Shooting Graph\n(8)Predicting Shooting\n(q)Quit")
+		"(7)Get Shooting Graph\n(8)Predicting Shooting\n(9)Last 5 Free Throw Sessions Percentage\n(q)Quit")
 	command = input().lower()
 	if command == "q":
 		break
@@ -50,7 +50,7 @@ while True:
 		print("\nYour Free Throw Percentage: " + str(percent) + "%\n" + 
 			"Total Free Throws Made: " + str(made) + 
 			"\nTotal Free Throws Attempted: " + str(total))
-	if command == "5":
+	if command == "6":
 		new_df = df[df['FT attempted'] > 0]
 		highest = new_df['Session FT Percentage'].max()
 		highest_index = new_df[new_df['Session FT Percentage'] == highest].index.values[0]
@@ -60,7 +60,7 @@ while True:
 		print("Free Throws Made: " + str(int(highest_made)))
 		print("Free Throws Attempted: " + str(int(highest_attempted)))
 
-	if command == "6":
+	if command == "5":
 		new_df = df[df['FT attempted'] > 0]
 		lowest = new_df['Session FT Percentage'].min()
 		lowest_index = new_df[new_df['Session FT Percentage'] == lowest].index.values[0]
@@ -92,8 +92,7 @@ while True:
 			guess = input()
 			g_made = ((float(guess))*m) + b
 			g_made = int(g_made)
-			print("If you shot " + str(guess) + " free throws you would approximately make " + 
-				str(g_made) + " free throws")
+			print(f"If you shot {guess} free throws you would approximately make {g_made} free throws")
 
 			predict_made = [0] * (len(x)-1)
 			predict_made.append(g_made)
@@ -123,8 +122,8 @@ while True:
 		if choice == "2":
 			print("Total shots made?")
 			guess = input()
-			g_attempted = ((float(guess)) - b)/m 
-			g_attempted = int(g_attempted)
+			g_attempted = ((float(guess)) - b)//m 
+			#g_attempted = int(g_attempted)  // rounds down through division
 			print("if you made " + str(guess) + " free throws you would approximately have" + 
 			" shot a total of " + str(g_attempted) + " free throws")
 
@@ -150,3 +149,24 @@ while True:
 			plt.xlabel("FT attempted", fontdict={'fontname': 'Comic Sans MS'})
 			plt.ylabel("FT made", fontdict={'fontname': 'Comic Sans MS'})
 			plt.show()
+	if command == '9':
+		last_5 = df.tail()
+		last_5_made = last_5['FT made'].sum()
+		last_5_attempted = last_5['FT attempted'].sum()
+		proportion_last_5 = last_5_made/last_5_attempted
+		percentage_last_5 = round(proportion_last_5,3)*100
+		#print(percentage_last_5)
+		total_made = df['FT made'].sum()
+		total_attempted = df['FT attempted'].sum()
+		total_proportion = total_made/total_attempted
+		total_percentage = round(total_proportion, 3)*100
+		#print(total_percentage)
+		print(f"\nIn the past 5 free throw sessions you have shot {percentage_last_5}% on {last_5_made} of {last_5_attempted} shooting.")
+		dif = abs(percentage_last_5 - total_percentage)
+		difference = round(dif,3)
+		if percentage_last_5 > total_percentage:
+			print(f"You shot {difference}% above your total free throw percentage")
+		elif percentage_last_5 < total_percentage:
+			print(f"You shot {difference}% below your total free throw percentage")
+		else:
+			print("In your last 5 free throw sessions you are shooting the same as your total free throw percentage")
