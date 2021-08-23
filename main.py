@@ -3,12 +3,29 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 
+def spaces():
+	print('\n')
+	for i in range(4):
+		print('///////////////////////////////////////////////////////')
+	print('\n')
+
+def welcome_message():
+	print('***         Welcome user to the Free Throw Calculator          ***')
+	print('***          My name is Arnav Karnik and I have been           ***')
+	print('***           playing basketball since I can remember.         ***')
+	print('***           My basektball coach would make us record         ***')
+	print('***         the out free throw statistics in high school.      ***')
+	print('***   So i decided to make a free throw tracker using python   ***')
+	print('***       ENJOY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!     ***')
+	
+
 def remove_row(dataframe):
 	dataframe = dataframe.drop(dataframe.index[-1])
 	return dataframe
 
-
+welcome_message()
 while True:
+	spaces()
 	df = pd.read_csv("data.csv")
 	df.columns = ["FT made", "FT attempted", "Session FT Percentage"]
 	print("\nPlease enter a command\n(1)Add Free Throw data\n(2)Delete data\n" + 
@@ -19,6 +36,7 @@ while True:
 	if command == "q":
 		break
 	if command == "1":
+		spaces()
 		print("How many Free Throws did you make?")
 		made = float(input())
 		print("How many total Free Throws did you shoot?")
@@ -40,9 +58,11 @@ while True:
 		df.to_csv("data.csv", index=False)
 
 	if command == "3":
+		spaces()
 		print(df.tail())
 	
 	if command == "4":
+		spaces()
 		made = df["FT made"].sum()
 		total = df["FT attempted"].sum()
 		proportion = float(made)/float(total)
@@ -51,6 +71,7 @@ while True:
 			"Total Free Throws Made: " + str(made) + 
 			"\nTotal Free Throws Attempted: " + str(total))
 	if command == "6":
+		spaces()
 		new_df = df[df['FT attempted'] > 0]
 		highest = new_df['Session FT Percentage'].max()
 		highest_index = new_df[new_df['Session FT Percentage'] == highest].index.values[0]
@@ -61,6 +82,7 @@ while True:
 		print("Free Throws Attempted: " + str(int(highest_attempted)))
 
 	if command == "5":
+		spaces()
 		new_df = df[df['FT attempted'] > 0]
 		lowest = new_df['Session FT Percentage'].min()
 		lowest_index = new_df[new_df['Session FT Percentage'] == lowest].index.values[0]
@@ -76,6 +98,7 @@ while True:
 		plt.ylabel("FT made", fontdict={'fontname': 'Comic Sans MS'})
 		plt.show()
 	if command == "8":
+		spaces()
 		made = df['FT made'].to_list()
 		attempted = df['FT attempted'].to_list()
 		x = np.array(attempted)
@@ -150,6 +173,7 @@ while True:
 			plt.ylabel("FT made", fontdict={'fontname': 'Comic Sans MS'})
 			plt.show()
 	if command == '9':
+		spaces()
 		last_5 = df.tail()
 		last_5_made = last_5['FT made'].sum()
 		last_5_attempted = last_5['FT attempted'].sum()
