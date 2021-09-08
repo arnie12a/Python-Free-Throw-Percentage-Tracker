@@ -2,13 +2,16 @@ from csv import writer
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
+import math
 
+# function that creates spaces throughout the program to make the program look more clean
 def spaces():
 	print('\n')
 	for i in range(4):
 		print('///////////////////////////////////////////////////////')
 	print('\n')
 
+# function that displays the user with a welcome message
 def welcome_message():
 	print('***         Welcome user to the Free Throw Calculator          ***')
 	print('***          My name is Arnav Karnik and I have been           ***')
@@ -18,7 +21,7 @@ def welcome_message():
 	print('***   So i decided to make a free throw tracker using python   ***')
 	print('***       ENJOY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!     ***')
 	
-
+# function gets called when you want to get rid of the last inputed free throw session
 def remove_row(dataframe):
 	dataframe = dataframe.drop(dataframe.index[-1])
 	return dataframe
@@ -29,12 +32,17 @@ while True:
 	df = pd.read_csv("data.csv")
 	df.columns = ["FT made", "FT attempted", "Session FT Percentage"]
 	print("\nPlease enter a command\n(1)Add Free Throw data\n(2)Delete data\n" + 
-		"(3)Get Data\n(4)Get Free Throw Percentage\n" +
+		"(3)Get Data\n(4)Get Free Throw Percentage\n" + 
 		"(5)Get Lowest Session Free Throw Percentage\n(6)Get Highest Session Free Throw Percentage\n" + 
-		"(7)Get Shooting Graph\n(8)Predicting Shooting\n(9)Last 5 Free Throw Sessions Percentage\n(q)Quit")
+		"(7)Get Shooting Graph\n(8)Predicting Shooting\n(9)Last 5 Free Throw Sessions Percentage\n " + 
+		"(10)Get standard deviation\n(q)Quit")
 	command = input().lower()
+	
+	# exits the program
 	if command == "q":
 		break
+
+	# Adds a free throw session with how many FT made by the user and the total number of FT the shot
 	if command == "1":
 		spaces()
 		print("How many Free Throws did you make?")
@@ -53,14 +61,17 @@ while True:
 			# Add conents of list as last row in the csv file
 			csv_writer.writerow(list_FT_data)
 
+	# Removes the last row in the data.csv file or removes the last FT session from the csv file
 	if command == "2":
 		df = remove_row(df)
 		df.to_csv("data.csv", index=False)
 
+	# Displays the tail of the dataframe for the user to see
 	if command == "3":
 		spaces()
 		print(df.tail())
 	
+	# Displays the user with their free throw percentage
 	if command == "4":
 		spaces()
 		made = df["FT made"].sum()
@@ -70,6 +81,8 @@ while True:
 		print("\nYour Free Throw Percentage: " + str(percent) + "%\n" + 
 			"Total Free Throws Made: " + str(made) + 
 			"\nTotal Free Throws Attempted: " + str(total))
+
+	# Displays the user with their highest free throw session percentage
 	if command == "6":
 		spaces()
 		new_df = df[df['FT attempted'] > 0]
@@ -81,6 +94,7 @@ while True:
 		print("Free Throws Made: " + str(int(highest_made)))
 		print("Free Throws Attempted: " + str(int(highest_attempted)))
 
+	# Displays the user with their lowest free throw session percentage
 	if command == "5":
 		spaces()
 		new_df = df[df['FT attempted'] > 0]
@@ -91,12 +105,16 @@ while True:
 		print("Lowest Session Free Throw Percentage: " + str(lowest) + "%")
 		print("Free Throws Made: " + str(int(lowest_made)))
 		print("Free Throws Attempted: " + str(int(lowest_attempted)))
+
+	# Displays the user with a graph representing the relationship between FT made and FT attempted
 	if command == "7":
 		plt.scatter(df['FT attempted'], df['FT made'])
 		plt.title("Free Throws Made vs Free Throws Attempted", fontdict={'fontname': 'Comic Sans MS', 'fontsize':20})
 		plt.xlabel("FT attempted", fontdict={'fontname': 'Comic Sans MS'})
 		plt.ylabel("FT made", fontdict={'fontname': 'Comic Sans MS'})
 		plt.show()
+
+	# Allows the user to predict information based on their past data
 	if command == "8":
 		spaces()
 		made = df['FT made'].to_list()
@@ -109,6 +127,8 @@ while True:
 		print("(1)Predict FT made given total shots put up")
 		print("(2)Predict FT attempted given shots made")
 		choice = input().lower()
+
+		# Predicts the FT made by the user when the user inputs the total shots they supposably put up
 		if choice == "1":
 			from matplotlib import pyplot as plt
 			print("Total shots put up?")
@@ -141,7 +161,7 @@ while True:
 			plt.ylabel("FT made", fontdict={'fontname': 'Comic Sans MS'})
 			plt.show()
 
-
+		# Predicts the FT attempted by the user when the user inputs the free throws the supposably made
 		if choice == "2":
 			print("Total shots made?")
 			guess = input()
@@ -172,6 +192,8 @@ while True:
 			plt.xlabel("FT attempted", fontdict={'fontname': 'Comic Sans MS'})
 			plt.ylabel("FT made", fontdict={'fontname': 'Comic Sans MS'})
 			plt.show()
+
+	# Displays the user with their FT percentage from the last 5 free throw sessions
 	if command == '9':
 		spaces()
 		last_5 = df.tail()
@@ -194,3 +216,25 @@ while True:
 			print(f"You shot {difference}% below your total free throw percentage")
 		else:
 			print("In your last 5 free throw sessions you are shooting the same as your total free throw percentage")
+
+	# Calculating the standard deviation of all the FT sessions from the mean
+	if command == "10":
+		spaces()
+		print("Using function: " + str(round(df['Session FT percentage'].std(), 2)))
+
+		total_made = df['FT made'].sum()
+		total_attempted = df['FT attempted'].sum()
+		proportion = total_made/total_attempted
+		mean = proportion*100
+
+		sessions = df['Session FT Percentage'].to_list()
+		total = 0 
+		counter = 0
+		for val in sessions:
+			new_val = abs(mean-val)
+			squared = new_val**2
+			counter+=1
+			total += squared
+		variance = total / counter
+		standard_deviation = math.sqrt(variance)
+		print("Hard coded: " + str(standard_deviation))
