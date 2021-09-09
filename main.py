@@ -34,7 +34,7 @@ while True:
 	print("\nPlease enter a command\n(1)Add Free Throw data\n(2)Delete data\n" + 
 		"(3)Get Data\n(4)Get Free Throw Percentage\n" + 
 		"(5)Get Lowest Session Free Throw Percentage\n(6)Get Highest Session Free Throw Percentage\n" + 
-		"(7)Get Shooting Graph\n(8)Predicting Shooting\n(9)Last 5 Free Throw Sessions Percentage\n " + 
+		"(7)Get Shooting Graph\n(8)Predicting Shooting\n(9)Last 5 Free Throw Sessions Percentage\n" + 
 		"(10)Get standard deviation\n(q)Quit")
 	command = input().lower()
 	
@@ -220,12 +220,12 @@ while True:
 	# Calculating the standard deviation of all the FT sessions from the mean
 	if command == "10":
 		spaces()
-		print("Using function: " + str(round(df['Session FT percentage'].std(), 2)))
+		print("Using function: " + str(round(df['Session FT Percentage'].std(), 2)))
 
 		total_made = df['FT made'].sum()
 		total_attempted = df['FT attempted'].sum()
 		proportion = total_made/total_attempted
-		mean = proportion*100
+		mean = round(proportion, 2)*100
 
 		sessions = df['Session FT Percentage'].to_list()
 		total = 0 
