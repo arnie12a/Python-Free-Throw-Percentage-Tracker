@@ -220,7 +220,7 @@ while True:
 	# Calculating the standard deviation of all the FT sessions from the mean
 	if command == "10":
 		spaces()
-		print("Using function: " + str(round(df['Session FT Percentage'].std(), 2)))
+		#print("Using function: " + str(round(df['Session FT Percentage'].std(), 2)))
 
 		total_made = df['FT made'].sum()
 		total_attempted = df['FT attempted'].sum()
@@ -237,4 +237,9 @@ while True:
 			total += squared
 		variance = total / counter
 		standard_deviation = math.sqrt(variance)
-		print("Hard coded: " + str(standard_deviation))
+		answer = round(standard_deviation,2)
+		print("Standard deviation: " + str(answer) + "%")
+
+	# Box and Wisker plot of free throw percentage
+	if command == "11":
+		boxplot = pd.boxplot(column = ['Session FT Percentage'])
