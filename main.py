@@ -239,7 +239,3 @@ while True:
 		standard_deviation = math.sqrt(variance)
 		answer = round(standard_deviation,2)
 		print("Standard deviation: " + str(answer) + "%")
-
-	# Box and Wisker plot of free throw percentage
-	if command == "11":
-		boxplot = pd.boxplot(column = ['Session FT Percentage'])
